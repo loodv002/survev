@@ -374,7 +374,7 @@ export async function isBehindProxy(ip: string, vpn: 0 | 1 | 2 | 3): Promise<boo
     if (cached && cached.expiresAt > Date.now()) {
         info = cached.info;
     }
-    if (!info) {
+    else {
         try {
             const proxyRes = await proxyCheck.checkIP(ip, {
                 vpn,
@@ -394,16 +394,17 @@ export async function isBehindProxy(ip: string, vpn: 0 | 1 | 2 | 3): Promise<boo
             }
         } catch (error) {
             defaultLogger.error(`Proxycheck error:`, error);
+        }
+
+        if (!info) {
             return false;
         }
+
+        proxyCheckCache.set(key, {
+            info,
+            expiresAt: Date.now() + util.daysToMs(1),
+        });
     }
-    if (!info) {
-        return false;
-    }
-    proxyCheckCache.set(key, {
-        info,
-        expiresAt: Date.now() + util.daysToMs(1),
-    });
 
     return info.proxy === "yes" || info.vpn === "yes";
 }
