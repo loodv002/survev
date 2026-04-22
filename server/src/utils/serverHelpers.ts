@@ -373,8 +373,7 @@ export async function isBehindProxy(ip: string, vpn: 0 | 1 | 2 | 3): Promise<boo
     const cached = proxyCheckCache.get(key);
     if (cached && cached.expiresAt > Date.now()) {
         info = cached.info;
-    }
-    else {
+    } else {
         try {
             const proxyRes = await proxyCheck.checkIP(ip, {
                 vpn,
